@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage>
 
   bool _isFlashing = false;
   bool _flashOn = false;
+  bool _screenFlash = false;
 
   final Color pinkDark = const Color(0xFFFC0FC0);
   final Color pinkBright = const Color(0xFFFF5FD6);
@@ -58,23 +59,27 @@ class _HomePageState extends State<HomePage>
 
       setState(() {
         _flashOn = true;
+        _screenFlash = true;
       });
 
       await Future.delayed(
-        const Duration(milliseconds: 100),
+        const Duration(milliseconds: 70),
       );
 
       setState(() {
         _flashOn = false;
+        _screenFlash = false;
       });
 
       await Future.delayed(
-        const Duration(milliseconds: 100),
+        const Duration(milliseconds: 70),
       );
     }
 
     setState(() {
       _isFlashing = false;
+      _flashOn = false;
+      _screenFlash = false;
     });
   }
 
@@ -86,7 +91,7 @@ class _HomePageState extends State<HomePage>
 
   Color _backgroundColor() {
     if (_isFlashing && _flashOn) {
-      return const Color(0xFFFFA8FF);
+      return const Color(0xFFFFC8FF);
     }
 
     final t = Curves.easeInOut.transform(
@@ -103,7 +108,7 @@ class _HomePageState extends State<HomePage>
 
   double _pulseScale() {
     if (_isFlashing) {
-      return _flashOn ? 1.30 : 1.0;
+      return _flashOn ? 1.45 : 1.0;
     }
 
     return 0.95 + (_controller.value * 0.10);
@@ -138,43 +143,54 @@ class _HomePageState extends State<HomePage>
               width: double.infinity,
               height: double.infinity,
               color: _backgroundColor(),
-              child: Center(
-                child: Transform.scale(
-                  scale: _pulseScale(),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Opacity(
-                        opacity: _glowOpacity(),
-                        child: ColorFiltered(
-                          colorFilter: const ColorFilter.mode(
-                            Color(0xFFE8B7FF),
-                            BlendMode.srcIn,
-                          ),
-                          child: Image.asset(
-                            'assets/images/inmon.png',
-                            width: 550,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Transform.scale(
+                    scale: _pulseScale(),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Opacity(
+                          opacity: _glowOpacity(),
+                          child: ColorFiltered(
+                            colorFilter: const ColorFilter.mode(
+                              Color(0xFFE8B7FF),
+                              BlendMode.srcIn,
+                            ),
+                            child: Image.asset(
+                              'assets/images/inmon.png',
+                              width: _flashOn ? 850 : 550,
+                            ),
                           ),
                         ),
-                      ),
 
-                      Opacity(
-                        opacity: _mainOpacity(),
-                        child: ColorFiltered(
-                          colorFilter: const ColorFilter.mode(
-                            Color(0xFF8D3ED9),
-                            BlendMode.srcIn,
-                          ),
-                          child: Image.asset(
-                            'assets/images/inmon.png',
-                            width: 420,
-                            fit: BoxFit.contain,
+                        Opacity(
+                          opacity: _mainOpacity(),
+                          child: ColorFiltered(
+                            colorFilter: const ColorFilter.mode(
+                              Color(0xFF8D3ED9),
+                              BlendMode.srcIn,
+                            ),
+                            child: Image.asset(
+                              'assets/images/inmon.png',
+                              width: 420,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+
+                  if (_screenFlash)
+                    Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: const Color(0xFFFFFFFF)
+                          .withValues(alpha: 0.55),
+                    ),
+                ],
               ),
             ),
           ),
