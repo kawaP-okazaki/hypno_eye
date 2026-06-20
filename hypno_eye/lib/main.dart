@@ -85,6 +85,10 @@ class _HomePageState extends State<HomePage>
   }
 
   Color _backgroundColor() {
+    if (_isFlashing && _flashOn) {
+      return const Color(0xFFFFA8FF);
+    }
+
     final t = Curves.easeInOut.transform(
       _controller.value,
     );
@@ -99,7 +103,7 @@ class _HomePageState extends State<HomePage>
 
   double _pulseScale() {
     if (_isFlashing) {
-      return _flashOn ? 1.15 : 1.0;
+      return _flashOn ? 1.30 : 1.0;
     }
 
     return 0.95 + (_controller.value * 0.10);
@@ -107,15 +111,15 @@ class _HomePageState extends State<HomePage>
 
   double _glowOpacity() {
     if (_isFlashing) {
-      return _flashOn ? 0.90 : 0.35;
+      return _flashOn ? 1.0 : 0.45;
     }
 
-    return 0.20 + (_controller.value * 0.25);
+    return 0.25 + (_controller.value * 0.30);
   }
 
   double _mainOpacity() {
     if (_isFlashing) {
-      return _flashOn ? 1.0 : 0.8;
+      return _flashOn ? 1.0 : 0.85;
     }
 
     return 0.85 + (_controller.value * 0.15);
@@ -130,7 +134,7 @@ class _HomePageState extends State<HomePage>
           onTap: _flashEffect,
           child: Scaffold(
             body: AnimatedContainer(
-              duration: const Duration(milliseconds: 100),
+              duration: const Duration(milliseconds: 50),
               width: double.infinity,
               height: double.infinity,
               color: _backgroundColor(),
@@ -144,12 +148,12 @@ class _HomePageState extends State<HomePage>
                         opacity: _glowOpacity(),
                         child: ColorFiltered(
                           colorFilter: const ColorFilter.mode(
-                            Color(0xFFC27BFF),
+                            Color(0xFFE8B7FF),
                             BlendMode.srcIn,
                           ),
                           child: Image.asset(
                             'assets/images/inmon.png',
-                            width: 450,
+                            width: 550,
                           ),
                         ),
                       ),
@@ -164,6 +168,7 @@ class _HomePageState extends State<HomePage>
                           child: Image.asset(
                             'assets/images/inmon.png',
                             width: 420,
+                            fit: BoxFit.contain,
                           ),
                         ),
                       ),
